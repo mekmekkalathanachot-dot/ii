@@ -1,0 +1,256 @@
+<!doctype html>
+<html lang="th">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#f8dce6">
+  <meta name="description" content="จดหมายเล็ก ๆ สำหรับวันครบรอบ 1 เดือนของเรา">
+  <title>จดหมายถึงเธอ — ครบรอบ 1 เดือน</title>
+  <style>
+    :root {
+      color-scheme: light;
+      --pink: #f8dce6;
+      --pink-deep: #d97997;
+      --pink-dark: #b94f73;
+      --ink: #593343;
+      --paper: #fffaf3;
+      font-family: "Leelawadee UI", "Noto Sans Thai", Tahoma, sans-serif;
+      color: var(--ink);
+      background: var(--pink);
+      font-synthesis: none;
+      text-rendering: optimizeLegibility;
+    }
+
+    * { box-sizing: border-box; }
+    body {
+      min-width: 320px;
+      min-height: 100vh;
+      min-height: 100svh;
+      margin: 0;
+      background-color: var(--pink);
+      background-image:
+        radial-gradient(circle, rgb(255 255 255 / 55%) 1.5px, transparent 2px),
+        linear-gradient(145deg, #fdeaf0, #f5cad9);
+      background-position: 0 0, center;
+      background-size: 30px 30px, cover;
+    }
+
+    button { font: inherit; }
+    .page {
+      min-height: 100vh;
+      min-height: 100svh;
+      display: grid;
+      place-items: center;
+      padding: 28px 18px;
+    }
+    .scene { width: min(100%, 390px); display: grid; justify-items: center; }
+    .anniversary-date {
+      margin: 0 0 9px;
+      color: var(--pink-dark);
+      font-size: 12px;
+      font-weight: 700;
+      letter-spacing: .04em;
+    }
+    .scene-title {
+      margin: 0;
+      color: var(--ink);
+      font-size: 17px;
+      font-weight: 700;
+    }
+    .scene.is-open .anniversary-date, .scene.is-open .scene-title { display: none; }
+    .stage {
+      position: relative;
+      width: 100%;
+      height: 460px;
+      margin-top: 20px;
+      perspective: 1000px;
+    }
+    .letter {
+      position: absolute;
+      z-index: 1;
+      top: 28px;
+      left: 50%;
+      width: min(100% - 28px, 330px);
+      min-height: 292px;
+      padding: 30px 25px 24px;
+      border: 1px solid #f1d7d2;
+      background-color: var(--paper);
+      background-image: linear-gradient(90deg, transparent 35px, rgb(217 121 151 / 15%) 36px, transparent 37px);
+      box-shadow: 0 15px 40px rgb(125 65 88 / 16%);
+      opacity: 0;
+      transform: translate(-50%, 126px) rotate(-1deg) scale(.97);
+      transition: opacity .7s ease, transform 1.1s cubic-bezier(.18, .72, .2, 1);
+      pointer-events: none;
+    }
+    .stage.is-open .letter {
+      z-index: 4;
+      opacity: 1;
+      transform: translate(-50%, 0) rotate(0) scale(1);
+      pointer-events: auto;
+    }
+    .letter-close {
+      position: absolute;
+      top: 8px;
+      right: 9px;
+      width: 32px;
+      height: 32px;
+      display: grid;
+      place-items: center;
+      padding: 0;
+      border: 0;
+      color: var(--pink-dark);
+      background: transparent;
+      font-size: 23px;
+      cursor: pointer;
+    }
+    .letter-close:focus-visible, .envelope:focus-visible { outline: 3px solid var(--pink-dark); outline-offset: 5px; }
+    .letter-date { margin: 0 0 15px; color: var(--pink-dark); font-size: 11px; font-weight: 700; }
+    .letter h1 { margin: 0 0 16px; font-size: 22px; line-height: 1.5; }
+    .letter-message { margin: 0; font-size: 14px; line-height: 1.95; white-space: pre-line; }
+    .letter-apology { margin: 16px 0 0; color: var(--pink-dark); font-size: 13px; font-weight: 600; line-height: 1.8; }
+    .letter-signature { margin: 17px 0 0; color: var(--pink-dark); font-size: 15px; font-weight: 700; text-align: right; }
+
+    .envelope {
+      position: absolute;
+      z-index: 3;
+      bottom: 36px;
+      left: 50%;
+      width: min(100% - 24px, 342px);
+      height: 204px;
+      padding: 0;
+      border: 0;
+      background: transparent;
+      cursor: pointer;
+      transform: translateX(-50%);
+      transition: transform .75s ease;
+      -webkit-tap-highlight-color: transparent;
+    }
+    .envelope-back {
+      position: absolute;
+      inset: 0;
+      background: #d58aa0;
+      clip-path: polygon(0 0, 100% 0, 100% 100%, 0 100%);
+      filter: drop-shadow(0 17px 15px rgb(125 65 88 / 20%));
+    }
+    .envelope-flap {
+      position: absolute;
+      z-index: 2;
+      inset: 0 0 auto;
+      height: 61%;
+      background: #e9aabc;
+      clip-path: polygon(0 0, 100% 0, 50% 100%);
+      transform-origin: top center;
+      transition: transform .8s ease, z-index .01s linear .4s;
+      backface-visibility: hidden;
+    }
+    .envelope-front {
+      position: absolute;
+      z-index: 3;
+      inset: 0;
+      background: linear-gradient(145deg, #f3c1cf, #e8a8bb);
+      clip-path: polygon(0 0, 50% 55%, 100% 0, 100% 100%, 0 100%);
+    }
+    .envelope-front::before, .envelope-front::after {
+      position: absolute;
+      inset: 0;
+      content: "";
+      background: rgb(255 255 255 / 13%);
+    }
+    .envelope-front::before { clip-path: polygon(0 0, 50% 55%, 0 100%); }
+    .envelope-front::after { clip-path: polygon(100% 0, 50% 55%, 100% 100%); background: rgb(173 72 106 / 9%); }
+    .seal {
+      position: absolute;
+      z-index: 4;
+      top: 48%;
+      left: 50%;
+      width: 48px;
+      height: 48px;
+      display: grid;
+      place-items: center;
+      border: 2px solid rgb(255 255 255 / 70%);
+      border-radius: 50%;
+      color: white;
+      background: var(--pink-dark);
+      box-shadow: 0 3px 8px rgb(125 65 88 / 18%);
+      font-size: 21px;
+      transform: translate(-50%, -50%);
+    }
+    .stage.is-open .envelope { z-index: 2; transform: translate(-50%, 32px); }
+    .stage.is-open .envelope-flap { z-index: 1; transform: rotateX(180deg); }
+    .hint {
+      min-height: 20px;
+      margin: 1px 0 0;
+      color: #885365;
+      font-size: 12px;
+      text-align: center;
+    }
+
+    @media (max-width: 380px) {
+      .stage { height: 440px; }
+      .letter { top: 25px; padding: 24px 21px 19px; }
+      .letter h1 { font-size: 20px; }
+      .letter h1 { margin-bottom: 12px; }
+      .letter-message { font-size: 13px; }
+      .letter-apology { margin-top: 12px; }
+      .letter-signature { margin-top: 12px; }
+      .envelope { bottom: 34px; height: 190px; }
+    }
+    @media (prefers-reduced-motion: reduce) {
+      *, *::before, *::after { scroll-behavior: auto !important; transition-duration: .01ms !important; }
+    }
+  </style>
+</head>
+<body>
+  <main class="page">
+    <section class="scene" aria-label="จดหมายวันครบรอบ 1 เดือน">
+      <p class="anniversary-date">29 ตุลาคม 2569 · ครบรอบ 1 เดือน</p>
+      <p class="scene-title">มีจดหมายถึงเธอหนึ่งฉบับ</p>
+      <div class="stage" id="letterStage">
+        <article class="letter" id="letter" aria-labelledby="letterTitle" aria-hidden="true">
+          <button class="letter-close" id="closeLetter" type="button" aria-label="ปิดจดหมาย">×</button>
+          <p class="letter-date">29 ตุลาคม 2569</p>
+          <h1 id="letterTitle">สุขสันต์วันครบรอบ 1 เดือนนะ</h1>
+          <p class="letter-message">ขอบคุณที่เข้ามาเป็นรอยยิ้มและเป็นความสุขให้กันในทุก ๆ วัน ถึงจะเพิ่งเริ่มต้นได้หนึ่งเดือน แต่ทุกช่วงเวลาที่มีเธอก็มีความหมายมากเลยนะ
+ 
+ดีใจที่เราได้มีกันและกัน ขอให้เดือนต่อ ๆ ไปของเรามีเรื่องน่ารักให้จดจำอีกเยอะ ๆ เลยนะ</p>
+          <p class="letter-apology">ขอโทษนะที่ไม่ค่อยมีเวลาให้ หรือบางทีไม่สนใจบ้าง แต่ยังรักและห่วงเสมอ</p>
+          <p class="letter-signature">รักนะ ♥</p>
+        </article>
+        <button class="envelope" id="envelopeButton" type="button" aria-label="เปิดจดหมายวันครบรอบ" aria-expanded="false" aria-controls="letter">
+          <span class="envelope-back" aria-hidden="true"></span>
+          <span class="envelope-flap" aria-hidden="true"></span>
+          <span class="envelope-front" aria-hidden="true"></span>
+          <span class="seal" aria-hidden="true">♥</span>
+        </button>
+      </div>
+      <p class="hint" id="hint" aria-live="polite">แตะซองจดหมายเพื่อเปิด</p>
+    </section>
+  </main>
+
+  <script>
+    const scene = document.querySelector(".scene");
+    const stage = document.querySelector("#letterStage");
+    const envelopeButton = document.querySelector("#envelopeButton");
+    const letter = document.querySelector("#letter");
+    const closeButton = document.querySelector("#closeLetter");
+    const hint = document.querySelector("#hint");
+
+    function setLetterOpen(isOpen) {
+      scene.classList.toggle("is-open", isOpen);
+      stage.classList.toggle("is-open", isOpen);
+      envelopeButton.setAttribute("aria-expanded", String(isOpen));
+      envelopeButton.setAttribute("aria-label", isOpen ? "ปิดจดหมายวันครบรอบ" : "เปิดจดหมายวันครบรอบ");
+      letter.setAttribute("aria-hidden", String(!isOpen));
+      hint.textContent = isOpen ? "กด × เพื่อปิดจดหมาย" : "แตะซองจดหมายเพื่อเปิด";
+    }
+
+    envelopeButton.addEventListener("click", () => {
+      setLetterOpen(envelopeButton.getAttribute("aria-expanded") !== "true");
+    });
+    closeButton.addEventListener("click", () => {
+      setLetterOpen(false);
+      envelopeButton.focus();
+    });
+  </script>
+</body>
+</html>
